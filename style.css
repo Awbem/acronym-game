@@ -1,1 +1,141 @@
+* {
+    box-sizing: border-box;
+}
 
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f4f8;
+    color: #1f2933
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.site-header {
+    padding: 2rem 1rem;
+    text-align: center;
+    background: #203041;
+    color: white;
+}
+
+.site-header h1 {
+    margin: 0;
+}
+
+.site-header p {
+    margin-bottom: 0;
+}
+
+.game-container {
+    width: min(90%, 700px);
+    margin: 2rem auto;
+}
+
+.game-screen {
+    padding: 2rem;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);  
+}
+
+.player-form {
+    margin-bottom: 1.5rem;
+}
+
+.player-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.player-form-controls {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.player-form input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #bcc5d1;
+    border-radius: 8px;
+}
+
+.player-form button,
+#start-game-button {
+    background-color: #203041;
+    color: white;
+}
+
+.player-list {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #d9dee7;
+    border-radius: 10px;
+}
+
+.player-information {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.player-number {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.ready-button {
+    background: #e2e6ef;
+    color: #203041;
+}
+
+.ready-button.is-ready {
+    background: #203041;
+    color: white;
+}
+
+.lobby-message {
+    min-height: 1.5rem;
+    color: #6b7280;
+}
+
+#start-game-button {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+@media (max-width: 500px) {
+    .player-form-controls {
+        flex-direction: column;
+    }
+
+    .player-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

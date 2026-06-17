@@ -8,9 +8,53 @@
   </head>
 
   <body>
-    <div>
+    <header class="site-header">
       <h1>Acronym Game</h1>
-      <h2>Awbem Studios</h2>
       <p>A tzar-style acronym-based word game.</p>
-    </div>
+    </header>
+
+    <main class="game-container">
+      <section id="lobby-screen" class="game-screen">
+        <h2>Game Lobby</h2>
+
+        <form id="player-form" class="player-form">
+          <label for="player-name">
+              Player Name
+          </label>
+          <div class="player-form-controls">
+            <input
+              id="player-name"
+              name="playerName"
+              type="text"
+              maxlength="20"
+              placeholder="Enter your name"
+              required
+              >
+
+              <button type="submit">
+                Add Player
+              </button>
+            </div>
+        </form>
+
+        <p id="player-count">
+          0 / 8 players
+        </p>
+
+        <ul id="player-list" class="player-list">
+          <!-- Javascript will insert players here. -->
+        </ul>
+
+        <p id="lobby-message" class="lobby-message">
+          Add at least 3 players to begin the game.
+        </p>
+
+        <button id="start-game-button" type="button" disabled>
+          Start Game
+        </button>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
   </body>
+  </html>
