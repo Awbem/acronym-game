@@ -14,6 +14,7 @@
     </header>
 
     <main class="game-container">
+
       <section id="lobby-screen" class="game-screen">
         <h2>Game Lobby</h2>
 
@@ -21,6 +22,7 @@
           <label for="player-name">
               Player Name
           </label>
+
           <div class="player-form-controls">
             <input
               id="player-name"
@@ -45,7 +47,7 @@
           <!-- Javascript will insert players here. -->
         </ul>
 
-        <p id="lobby-message" class="lobby-message">
+        <p id="lobby-message" class="status-message">
           Add at least 3 players to begin the game.
         </p>
 
@@ -53,6 +55,75 @@
           Start Game
         </button>
       </section>
+
+      <section
+            id="tzar-screen"
+            class="game-screen hidden"
+        >
+            <p id="round-label" class="eyebrow">
+                Round 1
+            </p>
+
+            <h2 id="tzar-heading">
+                Player 1 is the Tzar
+            </h2>
+
+            <p>
+                Enter between 4 and 8 letters.
+            </p>
+
+            <div class="timer-display">
+                <span id="tzar-timer">15</span>
+                seconds remaining
+            </div>
+
+            <form id="letters-form" class="letters-form">
+                <label for="letters-input">
+                    Acronym letters
+                </label>
+
+                <input
+                    id="letters-input"
+                    type="text"
+                    minlength="4"
+                    maxlength="8"
+                    autocomplete="off"
+                    placeholder="Example: ITMOAA"
+                    required
+                >
+
+                <button type="submit">
+                    Lock In Letters
+                </button>
+            </form>
+
+            <p id="letters-message" class="status-message"></p>
+        </section>
+
+        <!-- Prompt Reveal Screen -->
+        <section
+            id="prompt-screen"
+            class="game-screen hidden"
+        >
+            <p id="prompt-round-label" class="eyebrow">
+                Round 1
+            </p>
+
+            <h2>The letters are locked in</h2>
+
+            <div id="prompt-letters" class="prompt-letters">
+                ITMOAA
+            </div>
+
+            <p>
+                Players will use these letters to create their responses.
+            </p>
+
+            <button id="continue-button" type="button">
+                Continue
+            </button>
+        </section>
+
     </main>
 
     <script src="script.js"></script>

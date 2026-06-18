@@ -6,11 +6,12 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f2f4f8;
-    color: #1f2933
+    background: #f2f4f8;
+    color: #1f2933;
 }
 
-button, input {
+button,
+input {
     font: inherit;
 }
 
@@ -26,10 +27,14 @@ button:disabled {
     opacity: 0.5;
 }
 
+.hidden {
+    display: none;
+}
+
 .site-header {
     padding: 2rem 1rem;
     text-align: center;
-    background: #203041;
+    background: #20283a;
     color: white;
 }
 
@@ -50,14 +55,24 @@ button:disabled {
     padding: 2rem;
     border-radius: 16px;
     background: white;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 8px 24px rgb(0 0 0 / 10%);
+}
+
+.eyebrow {
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #667085;
 }
 
 .player-form {
     margin-bottom: 1.5rem;
 }
 
-.player-form label {
+.player-form label,
+.letters-form label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
@@ -68,16 +83,24 @@ button:disabled {
     gap: 0.75rem;
 }
 
-.player-form input {
-    flex: 1;
+.player-form input,
+.letters-form input {
+    width: 100%;
     min-width: 0;
     border: 1px solid #bcc5d1;
     border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.player-form input {
+    flex: 1;
 }
 
 .player-form button,
-#start-game-button {
-    background-color: #203041;
+.letters-form button,
+#start-game-button,
+#continue-button {
+    background: #4255d4;
     color: white;
 }
 
@@ -106,27 +129,65 @@ button:disabled {
 
 .player-number {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: #667085;
 }
 
 .ready-button {
     background: #e2e6ef;
-    color: #203041;
+    color: #1f2933;
 }
 
 .ready-button.is-ready {
-    background: #203041;
+    background: #238636;
     color: white;
 }
 
-.lobby-message {
+.status-message {
     min-height: 1.5rem;
-    color: #6b7280;
+    color: #667085;
 }
 
-#start-game-button {
+#start-game-button,
+#continue-button {
     width: 100%;
     margin-top: 1rem;
+}
+
+.timer-display {
+    margin: 1.5rem 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+#tzar-timer {
+    display: inline-block;
+    min-width: 2ch;
+    font-size: 2rem;
+    color: #4255d4;
+}
+
+.letters-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.letters-form input {
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.prompt-letters {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: bold;
+    letter-spacing: 0.2em;
+    background: #eef0ff;
+    color: #2d3db7;
+    overflow-wrap: anywhere;
 }
 
 @media (max-width: 500px) {
