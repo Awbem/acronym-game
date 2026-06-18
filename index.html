@@ -123,6 +123,61 @@
                 Continue
             </button>
         </section>
+        
+        <!-- Player Response Screen -->
+        <section
+          id="response-screen"
+          class="game-screen hidden"
+        >
+          <p id="response-round-label" class="eyebrow">
+            Round 1
+          </p>
+
+          <h2>Create Your Acronyms</h2>
+
+          <div id="response-letters" class="prompt-letters">
+            ITMOAA
+          </div>
+
+          <div class="timer-display">
+            <span id="response-timer">60</span>
+            seconds remaining
+          </div>
+
+          <p id="response-progress" class="status-message">
+            0 / 2 responses submitted
+          </p>
+
+          <div id="response-forms" class="response-forms">
+            <!-- JavaScript inserts player response forms here. -->
+          </div>
+
+          <p id="response-message" class="status-message"></p>
+        </section>
+
+        <!-- Response Complete Screen -->
+        <section
+          id="response-complete-screen"
+          class="game-screen hidden"
+        >
+          <p id="complete-round-label" class="eyebrow">
+            Round 1
+          </p>
+
+          <h2>Responses Locked In</h2>
+
+          <div id="complete-letters" class="prompt-letters">
+            ITMOAA
+          </div>
+
+          <p id="complete-message">
+            All available responses have been submitted.
+          </p>
+
+          <button id="judging-button" type="button">
+            Begin Judging
+          </button>
+        </section>
 
     </main>
 

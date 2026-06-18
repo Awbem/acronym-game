@@ -5,6 +5,7 @@ const MINIMUM_LETTERS = 4;
 const MAXIMUM_LETTERS = 8;
 
 const TZAR_TIME_LIMIT = 15;
+const RESPONSE_TIME_LIMIT = 60;
 
 const gameState = {
     players: [],
@@ -12,10 +13,13 @@ const gameState = {
     currentRound: 0,
     currentTzarIndex: 0,
     letters: "",
-    tzarDeadline: null
+    tzarDeadline: null,
+    responseDeadline: null,
+    responses: {}
 };
 
 let tzarTimerInterval = null;
+let responseTimerInterval = null;
 
 /*
     Lobby elements
@@ -59,6 +63,62 @@ const continueButton = document.querySelector(
 );
 
 /*
+    Response screen elements
+*/
+
+const responseScreen = document.querySelector(
+    "#response-screen"
+);
+
+const responseRoundLabel = document.querySelector(
+    "#response-round-label"
+);
+
+const responseLetters = document.querySelector(
+    "#response-letters"
+);
+
+const responseTimer = document.querySelector(
+    "#response-timer"
+);
+
+const responseProgress = document.querySelector(
+    "#response-progress"
+);
+
+const responseForms = document.querySelector(
+    "#response-forms"
+);
+
+const responseMessage = document.querySelector(
+    "#response-message"
+);
+
+/*
+    Response complete screen elements
+*/
+
+const responseCompleteScreen = document.querySelector(
+    "#response-complete-screen"
+);
+
+const completeRoundLabel = document.querySelector(
+    "#complete-round-label"
+);
+
+const completeLetters = document.querySelector(
+    "#complete-letters"
+);
+
+const completeMessage = document.querySelector(
+    "#complete-message"
+);
+
+const judgingButton = document.querySelector(
+    "#judging-button"
+);
+
+/*
     Event listeners
 */
 
@@ -68,6 +128,16 @@ startGameButton.addEventListener("click", startGame);
 lettersForm.addEventListener("submit", handleLettersSubmit);
 lettersInput.addEventListener("input", handleLettersInput);
 continueButton.addEventListener("click", handleContinue);
+
+responseForms.addEventListener(
+    "submit",
+    handleResponseSubmit
+);
+
+judgingButton.addEventListener(
+    "click",
+    handleBeginJudging
+);
 
 /*
     Lobby functions
@@ -403,8 +473,279 @@ function showPromptScreen() {
 }
 
 function handleContinue() {
+    beginResponsePhase();
+}
+
+/*
+    Response phase functions
+*/
+
+function beginResponsePhase() {
+    gameState.phase = "response-entry";
+    gameState.responses = {};
+
+    showScreen(responseScreen);
+
+    responseRoundLabel.textContent =
+        `Round ${gameState.currentRound}`;
+
+    responseLetters.textContent = gameState.letters;
+    responseMessage.textContent = "";
+
+    renderResponseForms();
+    startResponseTimer();
+}
+
+function getRespondingPlayers() {
+    const currentTzar = getCurrentTzar();
+
+    return gameState.players.filter((player) => {
+        return player.id !== currentTzar.id;
+    });
+}
+
+function renderResponseForms() {
+    responseForms.innerHTML = "";
+
+    const respondingPlayers = getRespondingPlayers();
+
+    respondingPlayers.forEach((player) => {
+        const responseCard = document.createElement("section");
+        responseCard.className = "response-card";
+
+        const playerHeading = document.createElement("h3");
+        playerHeading.textContent = player.name;
+
+        const savedResponse = gameState.responses[player.id];
+
+        responseCard.append(playerHeading);
+
+        if (savedResponse) {
+            const submittedResponse =
+                document.createElement("div");
+
+            submittedResponse.className =
+                "submitted-response";
+
+            const submittedLabel =
+                document.createElement("strong");
+
+            submittedLabel.textContent =
+                "Response submitted";
+
+            const responseText =
+                document.createElement("p");
+
+            responseText.textContent = savedResponse.text;
+
+            submittedResponse.append(
+                submittedLabel,
+                responseText
+            );
+
+            responseCard.append(submittedResponse);
+        } else {
+            const form = createResponseForm(player);
+            responseCard.append(form);
+        }
+
+        responseForms.append(responseCard);
+    });
+
+    updateResponseProgress();
+}
+
+function createResponseForm(player) {
+    const form = document.createElement("form");
+    form.className = "response-form";
+    form.dataset.playerId = player.id;
+
+    const label = document.createElement("label");
+    label.textContent =
+        `Create a phrase for ${gameState.letters}`;
+
+    const textarea = document.createElement("textarea");
+    textarea.name = "response";
+    textarea.placeholder =
+        "Example: Indonesian Tacos Might Otherwise Alleviate Arthritis";
+    textarea.maxLength = 150;
+    textarea.required = true;
+
+    const errorMessage = document.createElement("p");
+    errorMessage.className = "response-error";
+
+    const submitButton = document.createElement("button");
+    submitButton.type = "submit";
+    submitButton.textContent = "Submit Response";
+
+    form.append(
+        label,
+        textarea,
+        errorMessage,
+        submitButton
+    );
+
+    return form;
+}
+
+function handleResponseSubmit(event) {
+    event.preventDefault();
+
+    if (gameState.phase !== "response-entry") {
+        return;
+    }
+
+    const submittedForm = event.target;
+
+    if (!submittedForm.matches(".response-form")) {
+        return;
+    }
+
+    const playerId = submittedForm.dataset.playerId;
+
+    const textarea = submittedForm.querySelector(
+        "textarea"
+    );
+
+    const errorMessage = submittedForm.querySelector(
+        ".response-error"
+    );
+
+    const responseText = textarea.value.trim();
+
+    if (!responseMatchesLetters(responseText)) {
+        errorMessage.textContent =
+            `Your response must contain ${gameState.letters.length} words whose first letters spell ${gameState.letters}.`;
+
+        return;
+    }
+
+    if (gameState.responses[playerId]) {
+        return;
+    }
+
+    gameState.responses[playerId] = {
+        text: responseText,
+        submittedAt: Date.now()
+    };
+
+    renderResponseForms();
+
+    if (allResponsesAreSubmitted()) {
+        finishResponsePhase();
+    }
+}
+
+function responseMatchesLetters(responseText) {
+    const words = responseText
+        .trim()
+        .split(/\s+/)
+        .filter((word) => word !== "");
+
+    if (words.length !== gameState.letters.length) {
+        return false;
+    }
+
+    return words.every((word, index) => {
+        const firstLetterMatch = word.match(/[A-Za-z]/);
+
+        if (!firstLetterMatch) {
+            return false;
+        }
+
+        const firstLetter =
+            firstLetterMatch[0].toUpperCase();
+
+        return firstLetter === gameState.letters[index];
+    });
+}
+
+function updateResponseProgress() {
+    const respondingPlayers = getRespondingPlayers();
+
+    const submittedCount =
+        Object.keys(gameState.responses).length;
+
+    responseProgress.textContent =
+        `${submittedCount} / ${respondingPlayers.length} responses submitted`;
+}
+
+function allResponsesAreSubmitted() {
+    const respondingPlayers = getRespondingPlayers();
+
+    return (
+        Object.keys(gameState.responses).length ===
+        respondingPlayers.length
+    );
+}
+
+/*
+    Response timer functions
+*/
+
+function startResponseTimer() {
+    clearInterval(responseTimerInterval);
+
+    gameState.responseDeadline =
+        Date.now() + RESPONSE_TIME_LIMIT * 1000;
+
+    updateResponseTimerDisplay();
+
+    responseTimerInterval = setInterval(() => {
+        updateResponseTimerDisplay();
+    }, 250);
+}
+
+function updateResponseTimerDisplay() {
+    const millisecondsRemaining =
+        gameState.responseDeadline - Date.now();
+
+    const secondsRemaining = Math.max(
+        0,
+        Math.ceil(millisecondsRemaining / 1000)
+    );
+
+    responseTimer.textContent = secondsRemaining;
+
+    if (millisecondsRemaining <= 0) {
+        finishResponsePhase();
+    }
+}
+
+function finishResponsePhase() {
+    if (gameState.phase !== "response-entry") {
+        return;
+    }
+
+    clearInterval(responseTimerInterval);
+    responseTimerInterval = null;
+
+    gameState.phase = "response-complete";
+
+    showResponseCompleteScreen();
+}
+
+function showResponseCompleteScreen() {
+    showScreen(responseCompleteScreen);
+
+    completeRoundLabel.textContent =
+        `Round ${gameState.currentRound}`;
+
+    completeLetters.textContent = gameState.letters;
+
+    const submittedCount =
+        Object.keys(gameState.responses).length;
+
+    const totalPossibleResponses =
+        getRespondingPlayers().length;
+
+    completeMessage.textContent =
+        `${submittedCount} of ${totalPossibleResponses} players submitted a response.`;
+}
+
+function handleBeginJudging() {
     alert(
-        `Next, we will build the response phase for ${gameState.letters}.`
+        "Next, we will reveal the responses anonymously and let the Tzar select a winner."
     );
 }
 

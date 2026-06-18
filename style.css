@@ -11,7 +11,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
     font: inherit;
 }
 
@@ -188,6 +189,72 @@ button:disabled {
     background: #eef0ff;
     color: #2d3db7;
     overflow-wrap: anywhere;
+}
+
+#response-timer {
+    display: inline-block;
+    min-width: 2ch;
+    font-size: 2rem;
+    color: #4255d4;
+}
+
+.response-forms {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.response-card {
+    padding: 1rem;
+    border: 1px solid #d9dee7;
+    border-radius: 10px;
+}
+
+.response-card h3 {
+    margin-top: 0;
+}
+
+.response-form {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.response-form textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    border: 1px solid #bcc5d1;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font: inherit;
+}
+
+.response-form button,
+#judging-button {
+    background: #4255d4;
+    color: white;
+}
+
+.response-error {
+    min-height: 1.25rem;
+    margin: 0;
+    color: #b42318;
+}
+
+.submitted-response {
+    padding: 1rem;
+    border-radius: 8px;
+    background: #eaf7ed;
+    color: #176329;
+}
+
+.submitted-response p {
+    margin: 0.5rem 0 0;
+}
+
+#judging-button {
+    width: 100%;
+    margin-top: 1rem;
 }
 
 @media (max-width: 500px) {
